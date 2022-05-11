@@ -16,10 +16,10 @@ note :
 - [date] format : month-day
 
 ## Latest version (of each branches)
-Release : N/A
-Release Candidate : N/A
-Beta : N/A
-Alpha : 0.0.1a1
+- Release : N/A
+- Release Candidate : N/A
+- Beta : N/A
+- Alpha : 0.0.0a1
 
 ## Things to come before next release
 - [ ] more commands
