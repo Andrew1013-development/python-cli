@@ -3,9 +3,9 @@ Bare-bones Command Line Interface (CLI) written in Python
 
 ## Commmand Pallete
 ```
-ver : Show version
-exit : Exit CLI
-print [string] : Print string to stdout
+ver
+exit
+print [string]
 ```
 
 ## Versioning System
