@@ -19,7 +19,7 @@ note :
 - Release : N/A
 - Release Candidate : N/A
 - Beta : N/A
-- Alpha : 0.0.0a1
+- Alpha : 0.0.0a1 (build 0511)
 
 ## Things to come before next release
 - [ ] more commands
