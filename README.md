@@ -9,8 +9,8 @@ print [string]
 ```
 
 ## Versioning System
-{major}.{minor}.{revision}{branch}{build} {date}
-example : 0.0.1a1 0510
+v{major}.{minor}.{revision}{branch}{build} {date}
+example : v0.0.1a1 0511
 note : 
 - [date] part is only used in alpha and beta branches
 - [date] format : month-day
