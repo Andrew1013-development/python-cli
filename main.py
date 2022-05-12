@@ -21,7 +21,7 @@ branch = "a"
 build = 2
 flag = "C2"
 flag_desc = "CONCEPTION 2"
-compiled_date = date(2022,5,11)
+compiled_date = date(2022,5,12)
 version_string = f"v{major}.{minor}.{rev}{branch}{build}"
 
 #variables
