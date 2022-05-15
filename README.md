@@ -5,7 +5,10 @@ Bare-bones Command Line Interface (CLI) written in Python
 ```
 ver
 exit
-print [string]
+printstr [string]
+definevar [var_name] [var_type] [var_value]
+assignvar [var_name] [var_type] [var_value]
+printvar [var_name]
 ```
 
 ## Versioning System
