@@ -1,6 +1,11 @@
+#requirements : Python 3.9+ 
+#tested on Python 3.10.4 and Python 3.11.0a7
+
 # dependencies
 from datetime import date
-#from termcolor import cprint
+from datetime import datetime   
+#from termcolor import cprint as printc
+import time
 
 # command pallete
 # ver : print version
@@ -8,7 +13,11 @@ from datetime import date
 # printvar [variable name] : print variable value
 # definevar [variable name] [variable type] [variable value] : define a varaible with value of selected type
 # assignvar [variable name] [value type] [new variable value] : assign a given variable a new value of selected type
+# printc [string] [color] : print string with colors
+# date : print current date
+# time : print current time
 # exit : exit cli
+
 
 # variable types
 # int, float : numbers
@@ -20,11 +29,11 @@ major = 0
 minor = 0
 rev = 0
 branch = "a"
-build = 3
-flag = "C3"
-flag_desc = "CONCEPTION 3"
-compiled_date = date(2022,5,15)
-compile_tag = "0515"
+build = 4
+flag = "C4"
+flag_desc = "CONCEPTION 4"
+compiled_date = date(2022,5,17)
+compile_tag = "0517"
 version_string = f"v{major}.{minor}.{rev}{branch}{build}"
 
 #variables
@@ -41,6 +50,10 @@ while userin != "exit" :
             print(f"Flags for program : {flag} ({flag_desc})")
     elif userin == "exit" :
         break
+    elif userin == "date" :
+        print(datetime.now().strftime("%H:%M:%S"))
+    elif userin == "time" :
+        print(time.strftime("%H:%M:%S", time.localtime()))
     elif "definevar" in userin :
         var_name,var_type,var_value = [s for s in userin.removeprefix("definevar ").split(" ")]
         #type determination
@@ -70,4 +83,10 @@ while userin != "exit" :
         print(variables[[s for s in userin.split(" ")][1]])
     else :
         print("Error : Invaild command")
+    '''
+    elif "printc" in userin :
+        string,color = [s for s in userin.removeprefix("printc ").split(" ")]
+        printc(string,color)
+    '''
+    
     print() #print empty line
