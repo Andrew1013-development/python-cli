@@ -3,12 +3,15 @@ Bare-bones Command Line Interface (CLI) written in Python
 
 ## Commmand Pallete
 ```
-ver
-exit
-printstr [string]
-definevar [var_name] [var_type] [var_value]
-assignvar [var_name] [var_type] [var_value]
-printvar [var_name]
+# ver : print version
+# printstr [string] : print string 
+# printvar [variable name] : print variable value (if no variable name is specified, printvar will print all variables available)
+# definevar [variable type] [varianle type] [variable value] : define a varaible with value of selected type
+# assignvar [variable name] [variable type] [new variable value] : assign a given variable a new value of selected type
+# clearvar [variable name] : clear variable's value (reset value to blank)
+# exit : exit cli
+# date : display current date
+# time : display current time
 ```
 
 ## Versioning System
