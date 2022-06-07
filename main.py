@@ -1,14 +1,18 @@
 # dependencies
+import pip
+import os
+import sys
+import psutil
 from datetime import date
-from termcolor import cprint as printc
 from datetime import datetime
-from time import localtime
+from time import sleep
+from termcolor import cprint as printc
 from platform import python_version
+from platform import python_compiler
+from platform import python_implementation
 from platform import release
 from platform import system
 from platform import platform
-import os
-import sys
 
 # command pallete
 # ver : print version
@@ -18,6 +22,9 @@ import sys
 # assignvar [variable name] [variable type] [new variable value] : assign a given variable a new value of selected type
 # clearvar [variable name] : clear variable's value (reset value to blank)
 # exit : exit cli
+# time : display current day and time
+# log : show log of commands executed
+
 
 # variable types
 # integer, float : numbers
@@ -29,30 +36,37 @@ major = 0
 minor = 0
 rev = 0
 branch = "a"
-build = 5
-flag = "C5"
-flag_desc = "CONCEPTION 5"
-compiled_date = date(2022,6,7)
+build = 6
+flag = "C6"
+flag_desc = "CONCEPTION 6"
+compiled_date = date(2022,6,7).strftime("%d/%m/%Y")
 compile_tag = "0607"
-version_string = f"v{major}.{minor}.{rev}{branch}{build}"
-python_version = python_version()
+version_string = f"v{major}.{minor}.{rev}{branch}{build}-{compile_tag}"
+python_version = python_implementation() + " " + python_version()
+python_compiler = python_compiler()
 os_release = system() + " " + release()
 os_version = platform().replace("-"," ",2)
 
 #variables
+pre_userin = ""
 userin = ""
 variables = {}
+log = []
+error = False
 
 #main code
 while userin != "exit" :
     try :
+        error = False
         userin = input("> ")
         if userin == "ver" :
             print(f"Python CLI version {version_string}")
             print(f"Compiled on {compiled_date} with compilation tag {compile_tag}")
             if flag != "" :
                 print(f"Flags for program : {flag} ({flag_desc})")
-            print(f"Ran on Python version {python_version}")
+            print(f"Running on {python_version} [{python_compiler}]")
+            print()
+            print("(OS version might be inaccurate with Windows 10 and Windows 11)")
             print(f"Operating system : {os_release}")
             print(f"OS Version : {os_version}")
         elif userin == "exit" :
@@ -87,6 +101,7 @@ while userin != "exit" :
         elif "printstr" in userin :
             printstr_input = [s for s in userin.removeprefix("printstr ").split(" ")]
             string = " ".join(printstr_input)
+            print(string)
         elif "printvar" in userin :
             if userin == "printvar" :
                 if variables == {} :
@@ -107,8 +122,19 @@ while userin != "exit" :
             printc_input.remove(color)
             string = " ".join(printc_input)
             printc(string, color)
+        elif userin == "time" :
+            today = date.today().strftime("%d/%m/%Y")
+            now = datetime.now().strftime("%H:%M:%S")
+            print(f"Current day and time : {today} {now}")
+        elif userin == "log" :
+            print("Commands log :")
+            for i in range(0,len(log)) :
+                print(f"{i+1} {log[i]}")
         else :
             print("Error : Invaild command")
+            error = True
+        if error == False :
+            log.append(userin)
         print() #print empty line
     except KeyboardInterrupt :
         print("\nExiting from Ctrl-C trigger...")
