@@ -6,6 +6,7 @@ import psutil
 from datetime import date
 from datetime import datetime
 from time import sleep
+from time import time
 from termcolor import cprint as printc
 from platform import python_version
 from platform import python_compiler
@@ -30,17 +31,18 @@ from platform import platform
 # integer, float : numbers
 # string (default type)
 # boolean : True / False
+# auto : dynamically determined (not available with assignvar)
 
 #version thingies
 major = 0
 minor = 0
 rev = 0
 branch = "a"
-build = 6
-flag = "C6"
-flag_desc = "CONCEPTION 6"
-compiled_date = date(2022,6,7).strftime("%d/%m/%Y")
-compile_tag = "0607"
+build = 7
+flag = "C7"
+flag_desc = "CONCEPTION 7"
+compiled_date = date(2022,6,8).strftime("%d/%m/%Y")
+compile_tag = "0608"
 version_string = f"v{major}.{minor}.{rev}{branch}{build}-{compile_tag}"
 python_version = python_implementation() + " " + python_version()
 python_compiler = python_compiler()
@@ -81,9 +83,11 @@ while userin != "exit" :
                 var_value = float(var_value)
             elif var_type == "boolean" :
                 var_value = bool(var_value)
+            elif var_type == "auto" :
+                var_value = eval(var_value)
             variables[var_name] = var_value #assign variable and value
         elif "assignvar" in userin :
-            var_name,var_type,var_value = [s for s in userin.removeprefix("definevar ").split(" ")]
+            var_name,var_type,var_value = [s for s in userin.removeprefix("assignvar ").split(" ")]
             #type determination
             if var_type == "integer" :
                 var_value = int(var_value)  
@@ -91,6 +95,9 @@ while userin != "exit" :
                 var_value = float(var_value)
             elif var_type == "boolean" :
                 var_value = bool(var_value)
+            elif var_type == "auto" :
+                print("Can't assign value to variable with 'auto' type!")
+                break
             try :
                 variables[var_name] = var_value #assign variable and value
             except KeyError :
