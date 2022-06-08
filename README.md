@@ -15,8 +15,8 @@ Bare-bones Command Line Interface (CLI) written in Python
 ```
 
 ## Versioning System
-v{major}.{minor}.{revision}{branch}{build} {date}
-example : v0.0.1a1 0511
+v{major}.{minor}.{revision}{branch}{build}-{date}
+example : v0.0.1a1-0511
 note : 
 - [date] part is only used in alpha and beta branches
 - [date] format : month-day
@@ -24,8 +24,8 @@ note :
 ## Latest version (of each branches)
 - Release : N/A
 - Release Candidate : N/A
-- Beta : N/A
-- Alpha : 0.0.0a1
+- Beta : v0.0.0b1-0528
+- Alpha : v0.0.0a6-0607
 
 ## Things to come before next release
 - [ ] more commands
