@@ -30,7 +30,7 @@ from platform import platform
 # integer, float : numbers
 # string (default type)
 # boolean : True / False
-# auto : dynamically determined
+# auto : dynamically determined (no more limitations)
 
 #version thingies
 major = 0
