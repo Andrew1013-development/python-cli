@@ -1,100 +1,144 @@
 # dependencies
-from datetime import date
-from termcolor import cprint as printc
-from datetime import datetime
-from time import localtime
+import pip
 import os
 import sys
-
+import psutil
+from datetime import date
+from datetime import datetime
+from time import sleep
+from time import time
+from termcolor import cprint as printc
+from platform import python_version
+from platform import python_compiler
+from platform import python_implementation
+from platform import release
+from platform import system
+from platform import platform
 
 # command pallete
 # ver : print version
-# printstr [string] : print string
-# printvar [variable name] : print variable value
-# definevar [variable name] [variable type] [variable value] : define a varaible with value of selected type
-# assignvar [variable name] [value type] [new variable value] : assign a given variable a new value of selected type
+# printstr [string] : print string 
+# printvar [variable name] : print variable value (if no variable name is specified, printvar will print all variables available)
+# definevar [variable type] [varianle type] [variable value] : define a varaible with value of selected type
+# assignvar [variable name] [variable type] [new variable value] : assign a given variable a new value of selected type
+# clearvar [variable name] : clear variable's value (reset value to blank)
 # exit : exit cli
+# time : display current day and time
+# log : show log of commands executed
 
 # variable types
-# int, float : numbers
+# integer, float : numbers
 # string (default type)
-# bool : True / False
+# boolean : True / False
+# auto : dynamically determined
 
 #version thingies
 major = 0
 minor = 0
 rev = 0
 branch = "b"
-build = 1
-flag = "T1"
-flag_desc = "TESTING 1"
-compiled_date = date(2022,5,28)
-compile_tag = "0528"
-version_string = f"v{major}.{minor}.{rev}{branch}{build}"
+build = 2
+base_version = "v0.0.0a7-0608"
+flag = "T2"
+flag_desc = "TESTING 2"
+compiled_date = date(2022,6,8).strftime("%d/%m/%Y")
+compile_tag = "0608"
+version_string = f"v{major}.{minor}.{rev}{branch}{build}-{compile_tag}"
+python_version = python_implementation() + " " + python_version()
+python_compiler = python_compiler()
+os_release = system() + " " + release()
+os_version = platform().replace("-"," ",2)
 
 #variables
 pre_userin = ""
 userin = ""
 variables = {}
-disabled_commands = []
+log = []
+error = False
 
 #main code
 while userin != "exit" :
-    try :   
-        pre_userin = userin
+    try :
+        error = False
         userin = input("> ")
         if userin == "ver" :
-            print(f"Python CLI version {version_string}, based on v0.0.0a4")
+            print(f"Python CLI version {version_string}, based on {base_version}")
             print(f"Compiled on {compiled_date} with compilation tag {compile_tag}")
             if flag != "" :
                 print(f"Flags for program : {flag} ({flag_desc})")
-        #needs fixing
-        elif userin == "bug" :
-            print("bug reporting coming soon!")
+            print(f"Running on {python_version} [{python_compiler}]")
+            print()
+            print("(OS version might be inaccurate with Windows 10 and Windows 11)")
+            print(f"Operating system : {os_release}")
+            print(f"OS Version : {os_version}")
+        elif userin == "exit" :
+            print("Exiting...")
+            break
         elif "definevar" in userin :
-            var_name,var_type,var_value = [s for s in userin.removeprefix("definevar ").split(" ")]
+            var_type,var_name,var_value = [s for s in userin.removeprefix("definevar ").split(" ")]
             #type determination
-            if var_type == "int" :
+            if var_type == "integer" :
                 var_value = int(var_value)  
             elif var_type == "float" :
                 var_value = float(var_value)
-            elif var_type == "bool" :
+            elif var_type == "boolean" :
                 var_value = bool(var_value)
             variables[var_name] = var_value #assign variable and value
         elif "assignvar" in userin :
-            var_type,var_name,var_value = [s for s in userin.removeprefix("definevar ").split(" ")]
+            var_name,var_type,var_value = [s for s in userin.removeprefix("assignvar ").split(" ")]
             #type determination
-            if var_type == "int" :
+            if var_type == "integer" :
                 var_value = int(var_value)  
             elif var_type == "float" :
                 var_value = float(var_value)
-            elif var_type == "bool" :
+            elif var_type == "boolean" :
                 var_value = bool(var_value)
+            elif var_type == "auto" :
+                var_value = eval(var_value)
             try :
                 variables[var_name] = var_value #assign variable and value
             except KeyError :
                 print(f"Variable {var_name} does not exist!")
+        elif "clearvar" in userin :
+            var_name = [s for s in userin.split(" ")][1]
+            del variables[var_name]
         elif "printstr" in userin :
             printstr_input = [s for s in userin.removeprefix("printstr ").split(" ")]
             string = " ".join(printstr_input)
             print(string)
         elif "printvar" in userin :
-            var_name = [s for s in userin.split(" ")][1]
-            if var_name in variables.keys() :
-                print(variables[var_name])
+            if userin == "printvar" :
+                if variables == {} :
+                    print("There's no varaibles")
+                else :
+                    print("currently available variables :")
+                    for key in variables :  
+                        print(f"{key} <- {variables[key]} (type : {type(variables[key])})")
             else :
-                print(f"Variable {var_name} does not exist!")
+                var_name = [s for s in userin.split(" ")][1]
+                if var_name in variables.keys() :
+                    print(variables[var_name])
+                else :
+                    print(f"Variable {var_name} does not exist!")
         elif "printc " in userin :
             printc_input = [s for s in userin.removeprefix("printc ").split(" ")]
             color = printc_input[len(printc_input)-1]
             printc_input.remove(color)
             string = " ".join(printc_input)
             printc(string, color)
-        elif userin == "exit" :
-            print("Exiting...")
-            break
+        elif userin == "time" :
+            today = date.today().strftime("%d/%m/%Y")
+            now = datetime.now().strftime("%H:%M:%S")
+            print(f"Current day and time : {today} {now}")
+        elif userin == "log" :
+            print("Commands log :")
+            for i in range(0,len(log)) :
+                print(f"{i+1} {log[i]}")
         else :
             print("Error : Invaild command")
+            error = True
+        if error == False :
+            log.append(userin)
         print() #print empty line
     except KeyboardInterrupt :
         print("\nExiting from Ctrl-C trigger...")
