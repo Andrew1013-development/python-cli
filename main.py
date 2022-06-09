@@ -1,12 +1,13 @@
 # dependencies
 import pip
-import os
+from os import path
 import sys
-import psutil
+import psutil #module needs to be installed
 from datetime import date
 from datetime import datetime
 from time import sleep
 from time import time
+from timeit import timeit #module needs to be installed
 from termcolor import cprint as printc
 from platform import python_version
 from platform import python_compiler
@@ -25,7 +26,10 @@ from platform import platform
 # exit : exit cli
 # time : display current day and time
 # log : show log of commands executed
-
+# readtxt [file_name] : read text files and displaying the contents (line-by-line for now)
+# writetxt [file_name] [string]: write a string to text, will create file if file does not exist 
+# cwd : print current directory CLI is in
+# credit : showing credits (will be available on the first Release Candidate (rc) build or the final / third Beta (b) build)
 
 # variable types
 # integer, float : numbers
@@ -38,13 +42,13 @@ major = 0
 minor = 0
 rev = 0
 branch = "a"
-build = 7
-flag = "C7"
-flag_desc = "CONCEPTION 7"
-compiled_date = date(2022,6,8).strftime("%d/%m/%Y")
-compile_tag = "0608"
+build = 8
+flag = "C8"
+flag_desc = "CONCEPTION 8"
+compiled_date = date(2022,6,9).strftime("%d/%m/%Y")
+compile_tag = "0609"
 version_string = f"v{major}.{minor}.{rev}{branch}{build}-{compile_tag}"
-python_version = python_implementation() + " " + python_version()
+python_version = f"{python_implementation()} {python_version()}"
 python_compiler = python_compiler()
 os_release = system() + " " + release()
 os_version = platform().replace("-"," ",2)
@@ -55,6 +59,7 @@ userin = ""
 variables = {}
 log = []
 error = False
+work_dir = path.dirname(path.realpath(__file__))
 
 #main code
 while userin != "exit" :
@@ -85,6 +90,8 @@ while userin != "exit" :
                 var_value = bool(var_value)
             elif var_type == "auto" :
                 var_value = eval(var_value)
+            else :
+                print("Invaild variable type")
             variables[var_name] = var_value #assign variable and value
         elif "assignvar" in userin :
             var_name,var_type,var_value = [s for s in userin.removeprefix("assignvar ").split(" ")]
@@ -96,12 +103,12 @@ while userin != "exit" :
             elif var_type == "boolean" :
                 var_value = bool(var_value)
             elif var_type == "auto" :
-                print("Can't assign value to variable with 'auto' type!")
-                break
+                var_value = eval(var_value)
             try :
                 variables[var_name] = var_value #assign variable and value
             except KeyError :
-                print(f"Variable {var_name} does not exist!")
+                print(f"Variable {var_name} does not exist.")
+                error = True
         elif "clearvar" in userin :
             var_name = [s for s in userin.split(" ")][1]
             del variables[var_name]
@@ -112,7 +119,8 @@ while userin != "exit" :
         elif "printvar" in userin :
             if userin == "printvar" :
                 if variables == {} :
-                    print("There's no varaibles")
+                    print("There's no varaibles.")
+                    error = True
                 else :
                     print("currently available variables :")
                     for key in variables :  
@@ -122,7 +130,8 @@ while userin != "exit" :
                 if var_name in variables.keys() :
                     print(variables[var_name])
                 else :
-                    print(f"Variable {var_name} does not exist!")
+                    print(f"Variable {var_name} does not exist.")
+                    error = True
         elif "printc " in userin :
             printc_input = [s for s in userin.removeprefix("printc ").split(" ")]
             color = printc_input[len(printc_input)-1]
@@ -133,6 +142,31 @@ while userin != "exit" :
             today = date.today().strftime("%d/%m/%Y")
             now = datetime.now().strftime("%H:%M:%S")
             print(f"Current day and time : {today} {now}")
+        elif "readtxt" in userin :
+            filename = userin.removeprefix("readtxt ")
+            if ".txt" not in filename :
+                filename += ".txt"
+            filepath = path.join(work_dir,filename)
+            try :
+                with open(filepath,"r") as file_read :
+                    strings = file_read.readlines()
+                    file_read.close()
+                    for ele in strings :
+                        print(ele)
+            except FileNotFoundError :
+                print(f"{filepath} does not exist.")
+                error = True
+        elif "writetxt" in userin :
+            filename,string = [s for s in userin.removeprefix("writetxt ").split(" ")]
+            if ".txt" not in filename :
+                filename += ".txt"
+            filepath = path.join(work_dir,filename)
+            with open(filepath,"w") as file_write :
+                file_write.write(string)
+                file_write.close()
+                print("String written to file successfully.")
+        elif userin == "cwd" :
+            print(work_dir)
         elif userin == "log" :
             print("Commands log :")
             for i in range(0,len(log)) :
