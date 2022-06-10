@@ -1,6 +1,7 @@
 # dependencies
 import pip
 from os import path
+from os import remove
 import sys
 import psutil #module needs to be installed
 from datetime import date
@@ -8,7 +9,7 @@ from datetime import datetime
 from time import sleep
 from time import time
 from timeit import timeit #module needs to be installed
-from termcolor import cprint as printc
+from termcolor import cprint as printc #module needs to be installed
 from platform import python_version
 from platform import python_compiler
 from platform import python_implementation
@@ -28,6 +29,7 @@ from platform import platform
 # log : show log of commands executed
 # readtxt [file_name] : read text files and displaying the contents (line-by-line for now)
 # writetxt [file_name] [string]: write a string to text, will create file if file does not exist 
+# deltxt [file_name] : delete a text file
 # cwd : print current directory CLI is in
 # credit : showing credits (will be available on the first Release Candidate (rc) build or the final / third Beta (b) build)
 
@@ -41,18 +43,18 @@ from platform import platform
 major = 0
 minor = 0
 rev = 0
-branch = "a"
-build = 8
-flag = "C8"
-flag_desc = "CONCEPTION 8"
-compiled_date = date(2022,6,9).strftime("%d/%m/%Y")
-compile_tag = "0609"
+branch = "b"
+build = 3
+flag = f"T{build}"
+flag_desc = f"TESTING {build}"
+base_version = "v0.0.0a9-0610"
+compiled_date = date(2022,6,10).strftime("%d/%m/%Y")
+compile_tag = "0610"
 version_string = f"v{major}.{minor}.{rev}{branch}{build}-{compile_tag}"
 python_version = f"{python_implementation()} {python_version()}"
 python_compiler = python_compiler()
 os_release = system() + " " + release()
 os_version = platform().replace("-"," ",2)
-
 #variables
 pre_userin = ""
 userin = ""
@@ -67,15 +69,24 @@ while userin != "exit" :
         error = False
         userin = input("> ")
         if userin == "ver" :
-            print(f"Python CLI version {version_string}")
+            print(f"Python CLI version {version_string}, based on {base_version}")
             print(f"Compiled on {compiled_date} with compilation tag {compile_tag}")
             if flag != "" :
                 print(f"Flags for program : {flag} ({flag_desc})")
             print(f"Running on {python_version} [{python_compiler}]")
             print()
-            print("(OS version might be inaccurate with Windows 10 and Windows 11)")
+            if "Windows 10" in os_release :
+                os_build = os_version[11:]
+                for i in range(0,2) :
+                    current_dot_position = os_build.index(".")
+                    os_build = os_build[current_dot_position + 1:]
+                os_build = os_build[:5]
+                if int(os_build) >= 21996 :
+                    os_release = "Windows 11"
+                else :
+                    os_release = "Windows 10"
             print(f"Operating system : {os_release}")
-            print(f"OS Version : {os_version}")
+            print(f"OS Version : {os_release} {os_version[11:]}")
         elif userin == "exit" :
             print("Exiting...")
             break
@@ -165,12 +176,31 @@ while userin != "exit" :
                 file_write.write(string)
                 file_write.close()
                 print("String written to file successfully.")
+        elif "deltxt" in userin :
+            filename = userin.removeprefix("deltxt ")
+            if ".txt" not in userin :
+                filename += ".txt"
+            filepath = path.join(work_dir,filename)
+            if path.exists(filepath) :
+                remove(filepath)
+                print(f"{filepath} deleted.")
+            else :
+                print(f"{filepath} does not exist.")
+                error = True
         elif userin == "cwd" :
             print(work_dir)
         elif userin == "log" :
             print("Commands log :")
             for i in range(0,len(log)) :
                 print(f"{i+1} {log[i]}")
+        elif userin == "credit" :
+            print("pCLI relies on the work of 1 person :")
+            print("Lead Developer : Andrew1013")
+            print()
+            print("and these open-source dependencies and programs :")
+            print("Program : Python 3.10.x -> Python 3.11.x")
+            print("Dependencies : termcolor, psutil, timeit, built-in dependencies in Python")
+            print("IDE : Visual Studio Code")
         else :
             print("Error : Invaild command")
             error = True
