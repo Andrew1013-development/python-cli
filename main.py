@@ -26,7 +26,7 @@ from platform import platform
 # clearvar [variable name] : clear variable's value (reset value to blank)
 # exit : exit cli
 # time : display current day and time
-# log : show log of commands executed
+# log [view / export]: show log of commands executed / export log to log.txt
 # readtxt [file_name] : read text files and displaying the contents (line-by-line for now)
 # writetxt [file_name] [string]: write a string to text, will create file if file does not exist 
 # deltxt [file_name] : delete a text file
@@ -44,11 +44,11 @@ major = 0
 minor = 0
 rev = 0
 branch = "a"
-build = 9
+build = 10
 flag = f"C{build}"
 flag_desc = f"CONCEPTION {build}"
-compiled_date = date(2022,6,10).strftime("%d/%m/%Y")
-compile_tag = "0610"
+compiled_date = date(2022,6,13).strftime("%d/%m/%Y")
+compile_tag = "0613"
 version_string = f"v{major}.{minor}.{rev}{branch}{build}-{compile_tag}"
 python_version = f"{python_implementation()} {python_version()}"
 python_compiler = python_compiler()
@@ -102,7 +102,9 @@ while userin != "exit" :
                 var_value = eval(var_value)
             else :
                 print("Invaild variable type")
-            variables[var_name] = var_value #assign variable and value
+                error = True
+            if error != True :
+                variables[var_name] = var_value #assign variable and value
         elif "assignvar" in userin :
             var_name,var_type,var_value = [s for s in userin.removeprefix("assignvar ").split(" ")]
             #type determination
@@ -114,14 +116,20 @@ while userin != "exit" :
                 var_value = bool(var_value)
             elif var_type == "auto" :
                 var_value = eval(var_value)
+            else :
+                print("Invaild variable type")
             try :
                 variables[var_name] = var_value #assign variable and value
             except KeyError :
                 print(f"Variable {var_name} does not exist.")
                 error = True
-        elif "clearvar" in userin :
-            var_name = [s for s in userin.split(" ")][1]
-            del variables[var_name]
+                break
+        elif "clearvar" in userin :             
+            if userin == "clearvar" :
+                variables = {}
+            else :
+                var_name = userin.removeprefix("clearvar ")
+                del variables[var_name]
         elif "printstr" in userin :
             printstr_input = [s for s in userin.removeprefix("printstr ").split(" ")]
             string = " ".join(printstr_input)
@@ -188,10 +196,29 @@ while userin != "exit" :
                 error = True
         elif userin == "cwd" :
             print(work_dir)
-        elif userin == "log" :
-            print("Commands log :")
-            for i in range(0,len(log)) :
-                print(f"{i+1} {log[i]}")
+        elif "log" in userin :
+            argument = userin.removeprefix("log ")
+            if argument == "view" :
+                print("Commands log :")
+                for i in range(0,len(log)) :
+                    print(f"{i+1} {log[i]}")
+            elif argument == "export" :
+                filepath = path.join(work_dir,"log.txt")
+                with open(filepath,"w") as file_log :
+                    for i in range(0,len(log)) :
+                        file_log.write(f"{i+1} {log[i]}\n")
+                    file_log.close()
+            else :
+                print("Invaild argument.")
+                error = True
+        elif userin == "credit" :
+            print("pCLI relies on the work of 1 person :")
+            print("Lead Developer : Andrew1013")
+            print()
+            print("and these open-source dependencies and programs :")
+            print("Program : Python 3.10.x -> Python 3.11.x")
+            print("Dependencies : termcolor, psutil, timeit, built-in dependencies in Python")
+            print("IDE : Visual Studio Code")
         else :
             print("Error : Invaild command")
             error = True
