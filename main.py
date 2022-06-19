@@ -2,6 +2,8 @@
 import pip
 from os import path
 from os import remove
+from os import system as os_sys
+from os import name
 import sys
 import psutil #module needs to be installed
 from datetime import date
@@ -14,7 +16,7 @@ from platform import python_version
 from platform import python_compiler
 from platform import python_implementation
 from platform import release
-from platform import system
+from platform import system as pt_sys
 from platform import platform
 
 # command pallete
@@ -26,12 +28,13 @@ from platform import platform
 # clearvar [variable name] : clear variable's value (reset value to blank)
 # exit : exit cli
 # time : display current day and time
-# log : show log of commands executed
+# log [view / export]: show log of commands executed / export log to log.txt
 # readtxt [file_name] : read text files and displaying the contents (line-by-line for now)
 # writetxt [file_name] [string]: write a string to text, will create file if file does not exist 
 # deltxt [file_name] : delete a text file
 # cwd : print current directory CLI is in
 # credit : showing credits (will be available on the first Release Candidate (rc) build or the final / third Beta (b) build)
+# help : show command pallete
 
 # variable types
 # integer, float : numbers
@@ -44,16 +47,16 @@ major = 0
 minor = 0
 rev = 0
 branch = "b"
-build = 3
+build = 4
 flag = f"T{build}"
 flag_desc = f"TESTING {build}"
-base_version = "v0.0.0a9-0610"
-compiled_date = date(2022,6,10).strftime("%d/%m/%Y")
-compile_tag = "0610"
+base_version = "v0.0.0a10-0613"
+compiled_date = date(2022,6,19).strftime("%d/%m/%Y")
+compile_tag = "0619"
 version_string = f"v{major}.{minor}.{rev}{branch}{build}-{compile_tag}"
 python_version = f"{python_implementation()} {python_version()}"
 python_compiler = python_compiler()
-os_release = system() + " " + release()
+os_release = pt_sys() + " " + release()
 os_version = platform().replace("-"," ",2)
 #variables
 pre_userin = ""
@@ -62,6 +65,8 @@ variables = {}
 log = []
 error = False
 work_dir = path.dirname(path.realpath(__file__))
+
+#functions
 
 #main code
 while userin != "exit" :
@@ -103,7 +108,9 @@ while userin != "exit" :
                 var_value = eval(var_value)
             else :
                 print("Invaild variable type")
-            variables[var_name] = var_value #assign variable and value
+                error = True
+            if error != True :
+                variables[var_name] = var_value #assign variable and value
         elif "assignvar" in userin :
             var_name,var_type,var_value = [s for s in userin.removeprefix("assignvar ").split(" ")]
             #type determination
@@ -115,14 +122,20 @@ while userin != "exit" :
                 var_value = bool(var_value)
             elif var_type == "auto" :
                 var_value = eval(var_value)
+            else :
+                print("Invaild variable type")
             try :
                 variables[var_name] = var_value #assign variable and value
             except KeyError :
                 print(f"Variable {var_name} does not exist.")
                 error = True
-        elif "clearvar" in userin :
-            var_name = [s for s in userin.split(" ")][1]
-            del variables[var_name]
+                break
+        elif "clearvar" in userin :             
+            if userin == "clearvar" :
+                variables = {}
+            else :
+                var_name = userin.removeprefix("clearvar ")
+                del variables[var_name]
         elif "printstr" in userin :
             printstr_input = [s for s in userin.removeprefix("printstr ").split(" ")]
             string = " ".join(printstr_input)
@@ -143,7 +156,7 @@ while userin != "exit" :
                 else :
                     print(f"Variable {var_name} does not exist.")
                     error = True
-        elif "printc " in userin :
+        elif "printc" in userin :
             printc_input = [s for s in userin.removeprefix("printc ").split(" ")]
             color = printc_input[len(printc_input)-1]
             printc_input.remove(color)
@@ -189,10 +202,21 @@ while userin != "exit" :
                 error = True
         elif userin == "cwd" :
             print(work_dir)
-        elif userin == "log" :
-            print("Commands log :")
-            for i in range(0,len(log)) :
-                print(f"{i+1} {log[i]}")
+        elif "log" in userin :
+            argument = userin.removeprefix("log ")
+            if argument == "view" :
+                print("Commands log :")
+                for i in range(0,len(log)) :
+                    print(f"{i+1} {log[i]}")
+            elif argument == "export" :
+                filepath = path.join(work_dir,"log.txt")
+                with open(filepath,"w") as file_log :
+                    for i in range(0,len(log)) :
+                        file_log.write(f"{i+1} {log[i]}\n")
+                    file_log.close()
+            else :
+                print("Invaild argument.")
+                error = True
         elif userin == "credit" :
             print("pCLI relies on the work of 1 person :")
             print("Lead Developer : Andrew1013")
@@ -201,6 +225,31 @@ while userin != "exit" :
             print("Program : Python 3.10.x -> Python 3.11.x")
             print("Dependencies : termcolor, psutil, timeit, built-in dependencies in Python")
             print("IDE : Visual Studio Code")
+        elif userin == "help" :
+            print("ver : print version of pCLI")
+            print("credit : showing credits")
+            print("help : show command pallete")
+            print("cwd : print current directory CLI is in")
+            print("time : display current day and time")
+            print("exit : exit cli")
+            print("log [view / export]: show log of commands executed / export log to log.txt")
+            input("[Press Enter to continue]\n")
+            print("printstr [string] : print string ")
+            print("printvar [variable name] : print variable value (if no variable name is specified, printvar will print all variables available)")
+            print("definevar [variable type] [varianle type] [variable value] : define a varaible with value of selected type")
+            print("assignvar [variable name] [variable type] [new variable value] : assign a given variable a new value of selected type")
+            print("clearvar [variable name] : clear variable's value (reset value to blank)")
+            input("[Press Enter to continue]\n")
+            print("readtxt [file_name] : read text files and displaying the contents (line-by-line for now)")
+            print("writetxt [file_name] [string]: write a string to text, will create file if file does not exist")
+            print("deltxt [file_name] : delete a text file")
+            input("[Press Enter to continue]\n")
+            print("clear : clear terminal screen")
+        elif userin == "clear" :
+            if name == "nt" :
+                os_sys("cls")
+            else :
+                os_sys("clear")
         else :
             print("Error : Invaild command")
             error = True
