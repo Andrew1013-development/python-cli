@@ -5,6 +5,7 @@ from os import remove
 from os import system as os_sys
 from os import name
 import sys
+import requests #module needs to be installed
 import psutil #module needs to be installed
 from datetime import date
 from datetime import datetime
@@ -28,7 +29,7 @@ from platform import platform
 # clearvar [variable name] : clear variable's value (reset value to blank)
 # exit : exit cli
 # time : display current day and time
-# log [view / export]: show log of commands executed / export log to log.txt
+# log (view / export): show log of commands executed / export log to log.txt
 # readtxt [file_name] : read text files and displaying the contents (line-by-line for now)
 # writetxt [file_name] [string]: write a string to text, will create file if file does not exist 
 # deltxt [file_name] : delete a text file
@@ -47,12 +48,12 @@ major = 0
 minor = 0
 rev = 0
 branch = "rc"
-build = 1
+build = 2
 flag = f"R{build}"
 flag_desc = f"READY {build}"
-base_version = "v0.0.0b4-0619"
-compiled_date = date(2022,6,23).strftime("%d/%m/%Y")
-compile_tag = "0623"
+base_version = "v0.0.0b4-0629"
+compiled_date = date(2022,6,29).strftime("%d/%m/%Y")
+compile_tag = "0629"
 version_string = f"v{major}.{minor}.{rev}{branch}{build}-{compile_tag}"
 python_version = f"{python_implementation()} {python_version()}"
 python_compiler = python_compiler()
@@ -223,11 +224,19 @@ while userin != "exit" :
         elif userin == "cwd" :
             print(work_dir)
         elif "log" in userin :
-            argument = userin.removeprefix("log ")
+            if userin == "log" :
+                argument = "view"
+            else :
+                argument = userin.removeprefix("log ")
             if argument == "view" :
-                print("Commands log :")
-                for i in range(0,len(log)) :
-                    print(f"{i+1} {log[i]}")
+                if log == [] :
+                    print("Log is empty.")
+                else :
+                    print("Commands log :")
+                    for i in range(0,len(log)) :
+                        print(f"{i+1} {log[i]}")
+                        if i % 6 == 0:
+                            input("[Press Enter to continue]\n")
             elif argument == "export" :
                 filepath = path.join(work_dir,"log.txt")
                 with open(filepath,"w") as file_log :
@@ -252,7 +261,7 @@ while userin != "exit" :
             print("cwd : print current directory CLI is in")
             print("time : display current day and time")
             print("exit : exit cli")
-            print("log [view / export]: show log of commands executed / export log to log.txt")
+            print("log (view / export): show log of commands executed / export log to log.txt")
             input("[Press Enter to continue]\n")
             print("printstr [string] : print string ")
             print("printvar [variable name] : print variable value (if no variable name is specified, printvar will print all variables available)")
@@ -270,6 +279,17 @@ while userin != "exit" :
                 os_sys("cls")
             else :
                 os_sys("clear")
+        elif userin == "download" :
+            filepath = path.join(work_dir,"main-wyanh_14.py")
+            url = "https://raw.githubusercontent.com/Andrew1013-development/python-cli/misc/main-wyanh_14.py"
+            response = requests.get(url, stream=True)
+            size = int(response.headers.get('content-length', 0))
+            print("This is for testing purposes only, this command will not be documented.")
+            print(f"Downloading pCLI version v0.0.0m1-0608-wyanh_14....")
+            with open(filepath, 'wb') as f:
+                for data in response.iter_content(1024):
+                    f.write(data)
+            print("Download complete.")
         else :
             print("Error : Invaild command")
             error = True
