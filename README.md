@@ -25,8 +25,7 @@ Bare-bones Command Line Interface (CLI) written in Python
 v{major}.{minor}.{revision}{branch}{build}-{compiled_date}
 example : v0.0.0a1-0511
 note : 
-- [date] part is only used in alpha and beta branches
-- [date] format : month-day
+- [date] format : month-day (wil be changed into year-month-day before 2023)
 
 ## Latest version (of each branches)
 - Release : v0.0.0p1-0701
