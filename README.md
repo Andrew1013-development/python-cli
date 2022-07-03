@@ -1,5 +1,5 @@
 # python-cli
-Bare-bones Command Line Interface (CLI) written in Python
+Command Line Interface (CLI) written in Python
 
 ## Commmand Pallete
 ```
@@ -26,19 +26,26 @@ Bare-bones Command Line Interface (CLI) written in Python
 ```
 
 ## Versioning System
-v{major}.{minor}.{revision}{branch}{build}-{compiled_date}
-example : v0.0.0a1-0511
-note : 
-- [date] format : month-day (wil be changed into year-month-day before 2023)
-
+- versioning scheme (as of now) : v{major}.{minor}.{revision}{branch}{build}-{compiled_date}(-{note})
+  - {compiled_date} format : month-day (wil be changed into year-month-day before 2023)
+  - branch meanings :
+    - a : Alpha
+    - b : Beta
+    - rc : Release Candidate
+    - p (or no branch indicator) : Release
+    - m : Miscellaneous (v0.0.0)
+  - note : "-{note}" part is only for Miscellaneous builds
+  
 ## Latest version (of each branches)
 - Release : v0.0.0p3-0703
 - Release Candidate : v0.0.0rc2-0629
 - Beta : v0.0.0b4-0619
 - Alpha : v0.0.0a10-0613
+- Miscellaneous : v0.0.0m1-0608-wyanh_14
 
 ## Versions about to be deprecated (of each branches)
 - Release : N/A
 - Release Candidate : N/A
 - Beta : N/A
-- Alpha : v0.0.0a1-0511 (date of deprecation : 11/8/2022)
+- Alpha : v0.0.0a1-0511 (timeframe of deprecation : 5 to 10 months)
+- Miscellaneous : v0.0.0m1-0608-wyanh_14 (timeframe of deprecation : 3 to 6 months)
