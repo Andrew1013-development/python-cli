@@ -3,8 +3,8 @@ Bare-bones Command Line Interface (CLI) written in Python
 
 ## Commmand Pallete
 ```
-# command pallete
 # ver : print version
+# usrver : print version of pCLI's User mode (does include within the original ver command)
 # printstr [string] : print string 
 # printvar [variable name] : print variable value (if no variable name is specified, printvar will print all variables available)
 # definevar [variable type] [varianle type] [variable value] : define a varaible with value of selected type
@@ -17,8 +17,12 @@ Bare-bones Command Line Interface (CLI) written in Python
 # writetxt [file_name] [string]: write a string to text, will create file if file does not exist 
 # deltxt [file_name] : delete a text file
 # cwd : print current directory CLI is in
-# credit : showing credits (will be available on the first Release Candidate (rc) build or the final / third Beta (b) build)
+# mode : show what mode pCLI is in
+# credit : showing credits
 # help : show command pallete
+# system : enables the execution of system commands
+# sysver : print version of pCLI's System mode (does include within the original ver command)
+# exitsys : exit system mode, terminating system commands execution
 ```
 
 ## Versioning System
@@ -28,7 +32,7 @@ note :
 - [date] format : month-day (wil be changed into year-month-day before 2023)
 
 ## Latest version (of each branches)
-- Release : v0.0.0p1-0701
+- Release : v0.0.0p3-0703
 - Release Candidate : v0.0.0rc2-0629
 - Beta : v0.0.0b4-0619
 - Alpha : v0.0.0a10-0613
