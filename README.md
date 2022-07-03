@@ -29,11 +29,11 @@ Command Line Interface (CLI) written in Python
 - versioning scheme (as of now) : v{major}.{minor}.{revision}{branch}{build}-{compiled_date}(-{note})
   - {compiled_date} format : month-day (wil be changed into year-month-day before 2023)
   - branch meanings :
-    - a : Alpha
-    - b : Beta
-    - rc : Release Candidate
-    - p (or no branch indicator) : Release
-    - m : Miscellaneous (v0.0.0)
+    - a : Alpha (v0.0.0a10-0613)
+    - b : Beta (v0.0.0b4-0619)
+    - rc : Release Candidate (v0.0.0rc2-0629)
+    - p (or no branch indicator) : Release (v0.0.0p3-0703)
+    - m : Miscellaneous (v0.0.0m1-0608-wyanh_14)
   - note : "-{note}" part is only for Miscellaneous builds
   
 ## Latest version (of each branches)
