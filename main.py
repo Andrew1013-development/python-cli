@@ -362,6 +362,8 @@ while userin != "exit" :
                 system_commands = False
                 systemin = ""
                 gc.collect()
+                print()
+                break
             elif systemin == "sysver" :
                 print(f"Python CLI System mode version {sys_version_string}")
                 print(f"Compiled on {sys_compiled_date}")
