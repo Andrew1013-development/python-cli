@@ -6,6 +6,7 @@ from os import system as os_sys
 from os import name
 import sys
 import gc
+import pdb
 import requests #module needs to be installed
 import psutil #module needs to be installed
 from datetime import date
@@ -23,6 +24,7 @@ from platform import platform
 
 # command pallete
 # ver : print version
+# usrver : print version of pCLI's User mode (does include within the original ver command)
 # printstr [string] : print string 
 # printvar [variable name] : print variable value (if no variable name is specified, printvar will print all variables available)
 # definevar [variable type] [varianle type] [variable value] : define a varaible with value of selected type
@@ -35,9 +37,11 @@ from platform import platform
 # writetxt [file_name] [string]: write a string to text, will create file if file does not exist 
 # deltxt [file_name] : delete a text file
 # cwd : print current directory CLI is in
+# mode : show what mode pCLI is in
 # credit : showing credits
 # help : show command pallete
 # system : enables the execution of system commands
+# sysver : print version of pCLI's System mode (does include within the original ver command)
 # exitsys : exit system mode, terminating system commands execution
 
 # variable types
@@ -46,15 +50,15 @@ from platform import platform
 # boolean : True / False
 # auto : dynamically determined
 
-#version thingies
+#pCLI version thingies
 major = 0
 minor = 0
 rev = 0
 branch = "p"
-build = 2
+build = 3
 flag = f"P{build}"
 flag_desc = f"PRODUCTION {build}"
-base_version = "v0.0.0rc2-0629"
+base_version = "v0.0.0p2-0703"
 compiled_date = date(2022,7,3).strftime("%d/%m/%Y")
 compile_tag = "0703"
 version_string = f"v{major}.{minor}.{rev}{branch}{build}-{compile_tag}"
@@ -62,6 +66,20 @@ python_version = f"{python_implementation()} {python_version()}"
 python_compiler = python_compiler()
 os_release = pt_sys() + " " + release()
 os_version = platform().replace("-"," ",2)
+
+#User mode version thingies
+usr_major = 1
+usr_minor = 0
+usr_version_string = f"v{usr_major}.{usr_minor}"
+usr_compiled_date = date(2022,7,3).strftime("%d/%m/%Y")
+usr_level = 1
+
+#System mode version thingies
+sys_major = 1
+sys_minor = 0
+sys_version_string = f"v{sys_major}.{sys_minor}"
+sys_compiled_date = date(2022,7,3).strftime("%d/%m/%Y")
+sys_level = 2
 
 #variables
 pre_userin = ""
@@ -71,18 +89,29 @@ variables = {}
 log = []
 error = False
 system_commands = False
+user_commands = True
 work_dir = path.dirname(path.realpath(__file__))
+first_start = True
 
 #functions
 
 #main code
 while userin != "exit" :
     if system_commands == False :
+        if first_start == True :
+            if name == "nt" :
+                os_sys("cls")
+            else :
+                os_sys("clear")
+            print("You are in User mode. System mode is available with 'system' command.")
+            first_start = False
+        else :
+            pass
         try :
-            error = False
             userin = input("> ")
             if userin == "ver" :
-                print(f"Python CLI User mode version {version_string}, based on {base_version}")
+                print(f"Python CLI version {version_string}, based on {base_version}")
+                print(f"User mode version {usr_version_string}, System mode version {sys_version_string}")
                 print(f"Compiled on {compiled_date} with compilation tag {compile_tag}")
                 if flag != "" :
                     print(f"Flags for program : {flag} ({flag_desc})")
@@ -100,6 +129,10 @@ while userin != "exit" :
                         os_release = "Windows 10"
                 print(f"Operating system : {os_release}")
                 print(f"OS Version : {os_release} {os_version[11:]}")
+            elif userin == "usrver" :
+                print(f"Python CLI User mode version {usr_version_string}, level {usr_level}")
+                print(f"Compiled on {sys_compiled_date}")
+                print(f"Running on {python_version} [{python_compiler}]")
             elif userin == "exit" :
                 print("Exiting...")
                 gc.collect()
@@ -279,6 +312,7 @@ while userin != "exit" :
                 print("cwd : print current directory CLI is in")
                 print("time : display current day and time")
                 print("exit : exit cli")
+                print("mode : show what mode pCLI is in")
                 print("log [view / export / clear]: show log of commands executed / export log to log.txt / clear log")
                 input("[Press Enter to continue]\n")
                 print("printstr [string] : print string ")
@@ -299,6 +333,8 @@ while userin != "exit" :
                 print("Note : pCLI commands, including log, will not be executed in system mode.")
                 print("exitsys : exit system mode, terminating system commands execution.")
                 print("sysver : print version of pCLI's System mode")
+                print("usrver : print version of pCLI's User mode")
+                #input("[Press Enter to continue]\n")
             elif userin == "clear" :
                 if name == "nt" :
                     os_sys("cls")
@@ -327,6 +363,8 @@ while userin != "exit" :
                 sleep(0.5)
                 print("Entering System mode....")
                 sleep(0.1)
+            elif userin == "mode" :
+                print("Current mode : User mode")
             else :
                 print("Error : Invaild command")
                 error = True
@@ -344,12 +382,7 @@ while userin != "exit" :
             os_sys("clear")
         print("You are in System mode, all pCLI commands will be disabled")
         print("Type 'exitsys' to exit System mode")
-        #version thingies
-        sys_major = 0
-        sys_minor = 0
-        sys_version_string = f"v{sys_major}.{sys_minor}"
-        sys_compiled_date = date(2022,7,3).strftime("%d/%m/%Y")
-
+        
         #variables
         pre_systemin = ""
         systemin = "" 
@@ -357,17 +390,24 @@ while userin != "exit" :
         #main code
         while systemin != "exitsys" :
             systemin = input("> ")
-            if systemin == "exitsys" :
-                print("Exiting system mode...")
-                system_commands = False
-                systemin = ""
-                gc.collect()
-                print()
-                break
-            elif systemin == "sysver" :
-                print(f"Python CLI System mode version {sys_version_string}")
+            if systemin == "sysver" :
+                print(f"Python CLI System mode version {sys_version_string}, level {sys_level}")
                 print(f"Compiled on {sys_compiled_date}")
                 print(f"Running on {python_version} [{python_compiler}]")
+            elif systemin == "exitsys" :
+                print("Exiting system mode...")
+                print("Clearing System mode data...")
+                system_commands = False
+                first_start = True
+                systemin = ""
+                gc.collect()
+                sleep(0.5)
+                print("Entering User mode....")
+                sleep(0.1)
+                print()
+                break
+            elif systemin == "mode" :
+                print("Current mode : System mode")
             else :            
                 os_sys(systemin)
             print()
