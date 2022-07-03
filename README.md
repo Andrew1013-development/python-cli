@@ -55,13 +55,13 @@ Command Line Interface (CLI) written in Python
   - Month 1 to Month 3
   - 10 to 15 builds
 - Beta :
-  - Month 1 to Month 2
+  - Month 1 to Month 3
   - 3 to 6 builds
 - Release Candidate :
-  - Month 2 and Month 3
+  - Month 2 to Month 4
   - 2 to 4 builds
 - Release :
-  - Month 3
+  - Month 3 and Month 4
   - 1 to 3 builds (p indicator will be used if there is more than 1 Release build)
 - Miscellaneous : 
   - whenever there's a special event to base a build on lol
