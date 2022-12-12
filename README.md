@@ -41,7 +41,7 @@ Command Line Interface (CLI) written in Python
 - Release Candidate : v0.0.0rc2-0629
 - Beta : v0.0.0b4-0619
 - Alpha : v0.0.0a10-0613
-- Miscellaneous : v0.0.0m1-0608-wyanh_14
+- Miscellaneous : v0.0.0m2-07012-gsus
 
 ## Versions about to be deprecated (of each branches)
 - Release : N/A
